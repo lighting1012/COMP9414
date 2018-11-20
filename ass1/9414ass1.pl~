@@ -1,0 +1,98 @@
+%StudentName: Xu Jiaquan
+%StudentNumber: z5174903
+%AssignmentName: 9414_Assignment1_PrologProgramming
+
+% Q1.
+
+sum_neg([], 0).
+sum_neg([Head|Tail], Sum):-
+    Head < 0,
+    sum_neg(Tail, Sum1),
+    Sum is Sum1 + Head * Head.
+sum_neg([Head|Tail], Sum):-
+    Head >= 0,
+    sum_neg(Tail, Sum).
+
+% Q2.
+
+likes(mary, apple).
+likes(mary, pear).
+likes(mary, grapes).
+likes(tim, mango).
+likes(tim, apple).
+likes(jane, apple).
+likes(jane, mango).
+
+one_like_all(_, []).
+one_like_all(Person, [Head1|Tail1]):-
+    likes(Person, Head1),
+    one_like_all(Person, Tail1).
+all_like_all([], _).
+all_like_all([Head2|Tail2], [H1|T1]):-
+    one_like_all(Head2, [H1|T1]),
+    all_like_all(Tail2, [H1|T1]).
+
+% Q3.
+
+sqrt_table(M, M, Result):-
+    M > 0,
+    S is sqrt(M),
+    Result = [M, S].
+
+sqrt_table(N, M, Result):-
+    N > M,
+    M > 0,
+    N1 is N - 1,
+    S is sqrt(N),
+    sqrt_table(N1, M, Result1),
+    append([[N, S]], [Result1], Result).
+
+% Q4.
+consec(N,M) :-
+    M is N+1 .
+restlist([],_).
+restlist([H1|[H2|T]],R) :-
+    consec(H1,H2),
+    restlist([H2|T],R).
+restlist([H1|[H2|[]]],[H2|[]]) :-
+    consec(H1,H2),
+    restlist([],[]).
+restlist([H1|[H2|T]],[H1|[H2|T]]) :-
+    not(consec(H1,H2)),
+    restlist([],[]).
+chop_up([],[]).
+chop_up([H1|[H2|T]],[H1|NewList]) :-
+    not(consec(H1,H2)),
+    chop_up([H2|T],NewList).
+chop_up([H],[H|[]]).
+chop_up([H1|[H2|T]],[X|NewList]) :-
+    consec(H1,H2),
+    restlist([H1|[H2|T]],[H3|T2]),
+    append([H1],[H3],X),
+    chop_up(T2,NewList).
+
+% Q5.
+
+tree_eval(Value, tree(empty, X, empty), Eval):-
+    X = z,
+    Eval is Value.
+tree_eval(Value, tree(Ltree, op, Rtree), Eval):-
+    op = '+',
+    tree_eval(Value, Ltree, LEval),
+    tree_eval(Value, Rtree, REval),
+    Eval is LEval + REval.
+tree_eval(Value, tree(Ltree, op, Rtree), Eval):-
+    op = '-',
+    tree_eval(Value, Ltree, LEval),
+    tree_eval(Value, Rtree, REval),
+    Eval is LEval - REval.
+tree_eval(Value, tree(Ltree, op, Rtree), Eval):-
+    op = '*',
+    tree_eval(Value, Ltree, LEval),
+    tree_eval(Value, Rtree, REval),
+    Eval is LEval * REval.
+tree_eval(Value, tree(Ltree, op, Rtree), Eval):-
+    op = '/',
+    tree_eval(Value, Ltree, LEval),
+    tree_eval(Value, Rtree, REval),
+    Eval is LEval / REval.
